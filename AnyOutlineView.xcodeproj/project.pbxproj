@@ -18,6 +18,7 @@
 		E82CB1DE23DF53FA0037B7CF /* OldTestDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1DD23DF53FA0037B7CF /* OldTestDataSource.swift */; };
 		E82CB1E123DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */; };
 		E82CB1E323DF55890037B7CF /* SectionTestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1E223DF55890037B7CF /* SectionTestData.swift */; };
+		E82CB1E523DF56930037B7CF /* AnyOutlineViewStagedReload.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1E423DF56930037B7CF /* AnyOutlineViewStagedReload.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -46,6 +47,7 @@
 		E82CB1DD23DF53FA0037B7CF /* OldTestDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldTestDataSource.swift; sourceTree = "<group>"; };
 		E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArraySectionAnyOutlineViewDataSource.swift; sourceTree = "<group>"; };
 		E82CB1E223DF55890037B7CF /* SectionTestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTestData.swift; sourceTree = "<group>"; };
+		E82CB1E423DF56930037B7CF /* AnyOutlineViewStagedReload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyOutlineViewStagedReload.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +107,7 @@
 			children = (
 				E82CB1CA23DF30370037B7CF /* AppDelegate.swift */,
 				E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */,
+				E82CB1E423DF56930037B7CF /* AnyOutlineViewStagedReload.swift */,
 				E82CB1E223DF55890037B7CF /* SectionTestData.swift */,
 				E82CB1CC23DF30380037B7CF /* Assets.xcassets */,
 				E82CB1CE23DF30380037B7CF /* MainMenu.xib */,
@@ -240,6 +243,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82CB1E523DF56930037B7CF /* AnyOutlineViewStagedReload.swift in Sources */,
 				E82CB1E123DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift in Sources */,
 				E82CB1DE23DF53FA0037B7CF /* OldTestDataSource.swift in Sources */,
 				E82CB1CB23DF30370037B7CF /* AppDelegate.swift in Sources */,

@@ -8,6 +8,7 @@
 
 import Cocoa
 import AnyOutlineView
+import DifferenceKit
 
 // Notes:
 // - set the outlineview class to `AnyOutlineView` in the NIB (no module!)
@@ -22,6 +23,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
   @IBOutlet weak var outlineView: AnyOutlineView!
   
   @IBAction func performModification(_ sender: Any) {
+    let changeset = StagedChangeset(
+      source: arraySectionDataSource.sections,
+      target: target
+    )
+    outlineView.reload(using: changeset) { newValue in
+      self.arraySectionDataSource.sections = newValue
+    }
   }
   @IBAction func changeChildItem(_ sender: Any) {
   }
