@@ -156,7 +156,7 @@ open class AnyOutlineView: NSOutlineView {
     // TODO: do we really want this? Is the OutlineView still going to cache?
   }
   
-  open override func reloadItem(_ item: Any?, reloadChildren: Bool) {
+  open func reloadObjectItem(_ item: Any?, reloadChildren: Bool) {
     // Tested: `reloadItem` doesn't recursive on _itself_ w/ `reloadChildren`.
     // We need to patch the whole hierarchy upfront.
     defer {
@@ -165,9 +165,9 @@ open class AnyOutlineView: NSOutlineView {
     updateItem(item, updateChildren: reloadChildren)
   }
       
-  override open func insertItems(at indexes: IndexSet, inParent parent: Any?,
-                                 withAnimation animationOptions:
-                                   NSTableView.AnimationOptions = [])
+  open func insertObjectItems(at indexes: IndexSet, inParent parent: Any?,
+                              withAnimation animationOptions:
+                                NSTableView.AnimationOptions = [])
   {
     defer {
       super.insertItems(at: indexes, inParent: parent,
@@ -182,9 +182,9 @@ open class AnyOutlineView: NSOutlineView {
     }
   }
   
-  override open func removeItems(at indexes: IndexSet, inParent parent: Any?,
-                                 withAnimation animationOptions:
-                                   NSTableView.AnimationOptions = [])
+  open func removeObjectItems(at indexes: IndexSet,inParent parent: Any?,
+                              withAnimation animationOptions:
+                                NSTableView.AnimationOptions = [])
   {
     defer {
       super.removeItems(at: indexes, inParent: parent,
@@ -199,8 +199,8 @@ open class AnyOutlineView: NSOutlineView {
     }
   }
   
-  override open func moveItem(at fromIndex : Int, inParent oldParent : Any?,
-                              to toIndex   : Int, inParent newParent : Any?)
+  open func moveObjectItem(at fromIndex : Int, inParent oldParent : Any?,
+                           to toIndex   : Int, inParent newParent : Any?)
   {
     defer {
       super.moveItem(at: fromIndex, inParent: oldParent,
@@ -219,6 +219,53 @@ open class AnyOutlineView: NSOutlineView {
     ownNewParent.children?.insert(oldValue, at: toIndex)
   }
   
+  
+  // MARK: - Back Mapping API
+
+  override open func reloadItem(_ item: Any?, reloadChildren: Bool) {
+    guard let plainItem = item, !(plainItem is Item) else {
+      return reloadObjectItem(item, reloadChildren: reloadChildren)
+    }
+    
+    // TODO: locate Any
+  }
+
+  override open func insertItems(at indexes: IndexSet, inParent parent: Any?,
+                                 withAnimation animationOptions:
+                                   NSTableView.AnimationOptions = [])
+  {
+    guard let plainParent = parent, !(plainParent is Item) else {
+      return insertObjectItems(at: indexes, inParent: parent,
+                               withAnimation: animationOptions)
+    }
+    
+    // TODO
+  }
+  override open func removeItems(at indexes: IndexSet,inParent parent: Any?,
+                                 withAnimation animationOptions:
+                                   NSTableView.AnimationOptions = [])
+  {
+    guard let plainParent = parent, !(plainParent is Item) else {
+      return removeObjectItems(at: indexes, inParent: parent,
+                               withAnimation: animationOptions)
+    }
+    // TODO
+  }
+  override open func moveItem(at fromIndex : Int, inParent oldParent : Any?,
+                              to toIndex   : Int, inParent newParent : Any?)
+  {
+    if oldParent == nil && newParent == nil {
+      return moveObjectItem(at: fromIndex, inParent: nil,
+                            to: toIndex, inParent: nil)
+    }
+    else if oldParent is Item || newParent is Item {
+      return moveObjectItem(at: fromIndex, inParent: oldParent,
+                            to: toIndex, inParent: newParent)
+    }
+    
+    // TODO
+  }
+
   
   // MARK: - Retrieval
   
