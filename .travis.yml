@@ -1,0 +1,23 @@
+language:  generic
+
+notifications:
+    slack: nozeio:LIFY1Jtkx0FRcLq3u1WliHRZ
+
+matrix:
+    include:
+        - os:   osx
+          osx_image: xcode11
+
+before_install:
+    - ./.travis.d/before-install.sh
+
+install:
+    - ./.travis.d/install.sh
+
+script:
+    - export PATH="$HOME/usr/bin:$PATH"
+    - swift build -c release
+    - swift build -c debug
+    - set -o pipefail
+    - xcodebuild -configuration Release | xcpretty
+    - xcodebuild -configuration Debug   | xcpretty
