@@ -40,109 +40,11 @@ public extension AnyOutlineView {
              setData(sections)
              return reloadData()
          }
-
-       /*
-         let source = [
-             ArraySection(model: "Section 1", elements: ["A", "B", "C"]),
-             ArraySection(model: "Section 2", elements: ["D", "E", "F"]),
-             ArraySection(model: "Section 3", elements: ["G", "H", "I"]),
-             ArraySection(model: "Section 4", elements: ["J", "K", "L"])
-         ]
-
-         let target = [
-             ArraySection(model: "Section 5", elements: ["M", "N", "O"]),
-             ArraySection(model: "Section 1", elements: ["A", "C"]),
-             ArraySection(model: "Section 4", elements: ["J", "I", "K", "L"]),
-             ArraySection(model: "Section 3", elements: ["G", "H", "Z"]),
-             ArraySection(model: "Section 6", elements: ["P", "Q", "R"])
-         ]
-        
-         CHANGES: Changeset(
-             sectionDeleted: [
-                 1 // index 1 - S2
-             ],
-             elementDeleted: [
-                 [element: 1, section: 0] // B in index 0 - S1
-             ]
-             data: [
-                 ArraySection(
-                     model: Section 1,
-                     elements: ["A", "C"] // does not work!
-                 ),
-                 ArraySection(
-                     model: Section 3,
-                     elements: ["G", "H", "I"]
-                 ),
-                 ArraySection(
-                     model: Section 4,
-                     elements: ["J", "K", "L"]
-                 )
-             ],
-         )
-         CHANGES: Changeset(
-             sectionInserted: [
-                 0, // S5 into 0
-                 4  // S6 to the end (takes into account that S5 is inserted!)
-             ],
-             sectionMoved: [
-                 (source: 2, target: 3/*2*/) // we make that 3, move S3 after S4
-             ]
-             data: [
-                 ArraySection(
-                     model: Section 5,
-                     elements: ["M", "N", "O"]
-                 ),
-                 ArraySection(
-                     model: Section 1,
-                     elements: ["A", "C"]
-                 ),
-                 ArraySection(
-                     model: Section 4,
-                     elements: ["J", "K", "L"]
-                 ),
-                 ArraySection(
-                     model: Section 3,
-                     elements: ["G", "H", "I"]
-                 ),
-                 ArraySection(
-                     model: Section 6,
-                     elements: ["P", "Q", "R"]
-                 )
-             ],
-         )
-         CHANGES: Changeset(
-             data: [
-                 ArraySection(
-                     model: Section 5,
-                     elements: ["M", "N", "O"]
-                 ),
-                 ArraySection(
-                     model: Section 1,
-                     elements: ["A", "C"]
-                 ),
-                 ArraySection(
-                     model: Section 4,
-                     elements: ["J", "I", "K", "L"]
-                 ),
-                 ArraySection(
-                     model: Section 3,
-                     elements: ["G", "H", "Z"]
-                 ),
-                 ArraySection(
-                     model: Section 6,
-                     elements: ["P", "Q", "R"]
-                 )
-             ],
-             elementInserted: [
-                 [element: 2, section: 3]
-             ],
-             elementMoved: [
-                 (source: [element: 2, section: 3], target: [element: 1, section: 2])
-             ]
-         )
-  */
          for changeset in [stagedChangeset[0]] {
-           print("CHANGES:", changeset)
+             #if DEBUG
+               print("CHANGES:", changeset)
+             #endif
+          
              if let interrupt = interrupt, interrupt(changeset), let sections = stagedChangeset.last?.data {
                  setData(sections)
                  return reloadData()
