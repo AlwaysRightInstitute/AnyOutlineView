@@ -35,7 +35,7 @@ public protocol AnyOutlineViewDataSource: AnyObject {
 public extension AnyOutlineViewDataSource {
   
   func outlineView(_ outlineView: AnyOutlineView,
-                   is item: inout Any, identical toItem: inout Any) -> Bool
+                   is item: Any, identical toItem: Any) -> Bool
   {
     return ObjectIdentifier(item   as AnyObject)
         == ObjectIdentifier(toItem as AnyObject)

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,6 +14,10 @@
 		E82CB1CD23DF30380037B7CF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = E82CB1CC23DF30380037B7CF /* Assets.xcassets */; };
 		E82CB1D023DF30380037B7CF /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = E82CB1CE23DF30380037B7CF /* MainMenu.xib */; };
 		E82CB1D923DF32620037B7CF /* libAnyOutlineView.a in Frameworks */ = {isa = PBXBuildFile; fileRef = E82CB1B423DF2EF10037B7CF /* libAnyOutlineView.a */; };
+		E82CB1DC23DF53E70037B7CF /* DifferenceKit in Frameworks */ = {isa = PBXBuildFile; productRef = E82CB1DB23DF53E70037B7CF /* DifferenceKit */; };
+		E82CB1DE23DF53FA0037B7CF /* OldTestDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1DD23DF53FA0037B7CF /* OldTestDataSource.swift */; };
+		E82CB1E123DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */; };
+		E82CB1E323DF55890037B7CF /* SectionTestData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E82CB1E223DF55890037B7CF /* SectionTestData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -39,6 +43,9 @@
 		E82CB1CF23DF30380037B7CF /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		E82CB1D123DF30380037B7CF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		E82CB1D223DF30380037B7CF /* TestAnyOutlineView.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TestAnyOutlineView.entitlements; sourceTree = "<group>"; };
+		E82CB1DD23DF53FA0037B7CF /* OldTestDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OldTestDataSource.swift; sourceTree = "<group>"; };
+		E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArraySectionAnyOutlineViewDataSource.swift; sourceTree = "<group>"; };
+		E82CB1E223DF55890037B7CF /* SectionTestData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionTestData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,6 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82CB1DC23DF53E70037B7CF /* DifferenceKit in Frameworks */,
 				E82CB1D923DF32620037B7CF /* libAnyOutlineView.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -96,10 +104,13 @@
 			isa = PBXGroup;
 			children = (
 				E82CB1CA23DF30370037B7CF /* AppDelegate.swift */,
+				E82CB1E023DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift */,
+				E82CB1E223DF55890037B7CF /* SectionTestData.swift */,
 				E82CB1CC23DF30380037B7CF /* Assets.xcassets */,
 				E82CB1CE23DF30380037B7CF /* MainMenu.xib */,
 				E82CB1D123DF30380037B7CF /* Info.plist */,
 				E82CB1D223DF30380037B7CF /* TestAnyOutlineView.entitlements */,
+				E82CB1DD23DF53FA0037B7CF /* OldTestDataSource.swift */,
 			);
 			path = TestAnyOutlineView;
 			sourceTree = "<group>";
@@ -155,6 +166,9 @@
 				E82CB1D723DF325E0037B7CF /* PBXTargetDependency */,
 			);
 			name = TestAnyOutlineView;
+			packageProductDependencies = (
+				E82CB1DB23DF53E70037B7CF /* DifferenceKit */,
+			);
 			productName = TestAnyOutlineView;
 			productReference = E82CB1C823DF30370037B7CF /* TestAnyOutlineView.app */;
 			productType = "com.apple.product-type.application";
@@ -186,6 +200,9 @@
 				Base,
 			);
 			mainGroup = E82CB1AB23DF2EF10037B7CF;
+			packageReferences = (
+				E82CB1DA23DF53E70037B7CF /* XCRemoteSwiftPackageReference "DifferenceKit" */,
+			);
 			productRefGroup = E82CB1B523DF2EF10037B7CF /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -223,7 +240,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E82CB1E123DF547B0037B7CF /* ArraySectionAnyOutlineViewDataSource.swift in Sources */,
+				E82CB1DE23DF53FA0037B7CF /* OldTestDataSource.swift in Sources */,
 				E82CB1CB23DF30370037B7CF /* AppDelegate.swift in Sources */,
+				E82CB1E323DF55890037B7CF /* SectionTestData.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -461,6 +481,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		E82CB1DA23DF53E70037B7CF /* XCRemoteSwiftPackageReference "DifferenceKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ra1028/DifferenceKit.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.5;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		E82CB1DB23DF53E70037B7CF /* DifferenceKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = E82CB1DA23DF53E70037B7CF /* XCRemoteSwiftPackageReference "DifferenceKit" */;
+			productName = DifferenceKit;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E82CB1AC23DF2EF10037B7CF /* Project object */;
 }
