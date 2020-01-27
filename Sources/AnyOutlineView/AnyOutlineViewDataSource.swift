@@ -20,6 +20,26 @@ public protocol AnyOutlineViewDataSource: AnyObject {
        -> Any  
   func outlineView(_ outlineView: AnyOutlineView,
                    isItemExpandable item: Any) -> Bool
+  
+  /**
+   * This needs to be implemented if APIs are being used which take an `item`
+   * or `parent` item argument, e.g. `reloadItem` or `removeItems`.
+   *
+   * The `AnyOutlineView` will then walk its data mirror to find the proper
+   * object-item from the Any in its shadow structure. (expensive)
+   */
+  func outlineView(_ outlineView: AnyOutlineView,
+                   is item: Any, identical toItem: Any) -> Bool
+}
+
+public extension AnyOutlineViewDataSource {
+  
+  func outlineView(_ outlineView: AnyOutlineView,
+                   is item: inout Any, identical toItem: inout Any) -> Bool
+  {
+    return ObjectIdentifier(item   as AnyObject)
+        == ObjectIdentifier(toItem as AnyObject)
+  }
 }
 
 #endif // macOS

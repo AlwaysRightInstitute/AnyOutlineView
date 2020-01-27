@@ -85,8 +85,8 @@
 			isa = PBXGroup;
 			children = (
 				E82CB1BE23DF2F590037B7CF /* AnyOutlineView.swift */,
-				E82CB1BD23DF2F590037B7CF /* AnyOutlineViewDelegate.swift */,
 				E82CB1BF23DF2F590037B7CF /* AnyOutlineViewDataSource.swift */,
+				E82CB1BD23DF2F590037B7CF /* AnyOutlineViewDelegate.swift */,
 			);
 			name = AnyOutlineView;
 			path = Sources/AnyOutlineView;

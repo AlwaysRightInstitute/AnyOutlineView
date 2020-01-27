@@ -124,13 +124,17 @@ open class AnyOutlineView: NSOutlineView {
     }
     
     let typedItem = item as? Item
-    let ownItem   = typedItem ?? root
+    guard let ownItem = (item == nil ? root : typedItem) else {
+      assertionFailure("could not locate own item: \(item as Any)")
+      return
+    }
     
     // If it is not the root, patch the value
     if let typedItem = typedItem, let parent = typedItem.parent {
       if let typedItemIndex = parent.index(of: typedItem) {
         typedItem.value =
-          dataSource.outlineView(self, child: typedItemIndex, ofItem: parent)
+          dataSource.outlineView(self, child: typedItemIndex,
+                                 ofItem: parent === root ? nil : parent.value)
       }
       else {
         assertionFailure("could not locate item in parent")
@@ -156,7 +160,7 @@ open class AnyOutlineView: NSOutlineView {
     // TODO: do we really want this? Is the OutlineView still going to cache?
   }
   
-  open override func reloadItem(_ item: Any?, reloadChildren: Bool) {
+  open func reloadObjectItem(_ item: Any?, reloadChildren: Bool) {
     // Tested: `reloadItem` doesn't recursive on _itself_ w/ `reloadChildren`.
     // We need to patch the whole hierarchy upfront.
     defer {
@@ -165,9 +169,9 @@ open class AnyOutlineView: NSOutlineView {
     updateItem(item, updateChildren: reloadChildren)
   }
       
-  override open func insertItems(at indexes: IndexSet, inParent parent: Any?,
-                                 withAnimation animationOptions:
-                                   NSTableView.AnimationOptions = [])
+  open func insertObjectItems(at indexes: IndexSet, inParent parent: Any?,
+                              withAnimation animationOptions:
+                                NSTableView.AnimationOptions = [])
   {
     defer {
       super.insertItems(at: indexes, inParent: parent,
@@ -182,9 +186,9 @@ open class AnyOutlineView: NSOutlineView {
     }
   }
   
-  override open func removeItems(at indexes: IndexSet, inParent parent: Any?,
-                                 withAnimation animationOptions:
-                                   NSTableView.AnimationOptions = [])
+  open func removeObjectItems(at indexes: IndexSet,inParent parent: Any?,
+                              withAnimation animationOptions:
+                                NSTableView.AnimationOptions = [])
   {
     defer {
       super.removeItems(at: indexes, inParent: parent,
@@ -199,8 +203,8 @@ open class AnyOutlineView: NSOutlineView {
     }
   }
   
-  override open func moveItem(at fromIndex : Int, inParent oldParent : Any?,
-                              to toIndex   : Int, inParent newParent : Any?)
+  open func moveObjectItem(at fromIndex : Int, inParent oldParent : Any?,
+                           to toIndex   : Int, inParent newParent : Any?)
   {
     defer {
       super.moveItem(at: fromIndex, inParent: oldParent,
@@ -220,8 +224,106 @@ open class AnyOutlineView: NSOutlineView {
   }
   
   
-  // MARK: - Retrieval
+  // MARK: - Back Mapping API
+
+  override open func reloadItem(_ item: Any?, reloadChildren: Bool) {
+    guard let plainItem = item, !(plainItem is Item) else {
+      return reloadObjectItem(item, reloadChildren: reloadChildren)
+    }
+    
+    guard let objectItem = lookupItem(for: plainItem) else { return }
+    reloadObjectItem(objectItem, reloadChildren: reloadChildren)
+  }
+
+  override open func insertItems(at indexes: IndexSet, inParent parent: Any?,
+                                 withAnimation animationOptions:
+                                   NSTableView.AnimationOptions = [])
+  {
+    guard let plainParent = parent, !(plainParent is Item) else {
+      return insertObjectItems(at: indexes, inParent: parent,
+                               withAnimation: animationOptions)
+    }
+    
+    guard let objectParent = lookupItem(for: plainParent) else { return }
+    return insertObjectItems(at: indexes, inParent: objectParent,
+                             withAnimation: animationOptions)
+  }
   
+  override open func removeItems(at indexes: IndexSet,inParent parent: Any?,
+                                 withAnimation animationOptions:
+                                   NSTableView.AnimationOptions = [])
+  {
+    guard let plainParent = parent, !(plainParent is Item) else {
+      return removeObjectItems(at: indexes, inParent: parent,
+                               withAnimation: animationOptions)
+    }
+    
+    guard let objectParent = lookupItem(for: plainParent) else { return }
+    return removeObjectItems(at: indexes, inParent: objectParent,
+                             withAnimation: animationOptions)
+  }
+  
+  override open func moveItem(at fromIndex : Int, inParent oldParent : Any?,
+                              to toIndex   : Int, inParent newParent : Any?)
+  {
+    if oldParent == nil && newParent == nil {
+      moveObjectItem(at: fromIndex, inParent: nil, to: toIndex, inParent: nil)
+    }
+    else if oldParent is Item || newParent is Item {
+      moveObjectItem(at: fromIndex, inParent: oldParent,
+                     to: toIndex,   inParent: newParent)
+    }
+    else {
+      let oldObjectParent : Item?
+      if let oldParent = oldParent {
+        guard let result = lookupItem(for: oldParent) else { return }
+        oldObjectParent = result
+      }
+      else { oldObjectParent = nil }
+      
+      let newObjectParent : Item?
+      if let newParent = newParent {
+        guard let result = lookupItem(for: newParent) else { return }
+        newObjectParent = result
+      }
+      else { newObjectParent = nil }
+      
+      moveObjectItem(at: fromIndex, inParent: oldObjectParent,
+                     to: toIndex,   inParent: newObjectParent)
+    }
+  }
+
+  
+  // MARK: - Retrieval
+
+  private func lookupItem(for value: Any) -> Item? {
+    guard let item = _lookupItem(for: value, in: root) else {
+      print("failed to locate item in outline view: \(value)")
+      assertionFailure("failed to locate value in outline view: \(value)")
+      return nil
+    }
+    return item
+  }
+  private func _lookupItem(for value: Any, in parent: Item) -> Item? {
+    // We could make it ID based, but that would probably mean AnyHashable or
+    // generics. For this we want to keep it "Any".
+    guard let dataSource = anyDataSource else { return nil }
+    guard let children = parent.children else { return nil }
+    
+    for fault in children {
+      guard case .item(let item) = fault else { continue }
+      if dataSource.outlineView(self, is: value, identical: item.value) {
+        return item
+      }
+    }
+    for fault in children {
+      guard case .item(let item) = fault else { continue }
+      if let child = _lookupItem(for: value, in: item) { return child }
+    }
+    return nil
+  }
+  
+
   @discardableResult
   fileprivate func ensureCountInItem(_ item: Item) -> Int {
     if let count = item.children?.count { return count } // have it already
@@ -280,7 +382,7 @@ extension AnyOutlineView: NSOutlineViewDataSource {
     
     let childValue = dataSource.outlineView(self, child: index,
                                             ofItem: typedItem?.value)
-    let childItem = Item(childValue, parent: typedItem)
+    let childItem = Item(childValue, parent: ownItem)
     ownItem.children![index] = .item(childItem)
     
     return childItem
