@@ -14,20 +14,26 @@ import AnyOutlineView
 // - create an outlet, do NOT wire up delegate/datasource! (TODO, how can
 //   we expose `anyDelegate`, `anyaDataSource` to IB?)
 
-enum Section: String, CaseIterable {
+enum Section {
   
-  case dropbox      = "Dropbox"
-  case airdrop      = "AirDrop"
-  case applications = "Applications"
-  case desktop      = "Desktop"
+  case dropbox     (items: [ String ])
+  case airdrop     (items: [ String ])
+  case applications(items: [ String ])
+  case desktop     (items: [ String ])
+  
+  var label : String {
+    switch self {
+      case .dropbox:      return "Dropbox"
+      case .airdrop:      return "AirDrop"
+      case .applications: return "Applications"
+      case .desktop:      return "Desktop"
+    }
+  }
   
   var items : [ String ] {
     switch self {
-      case .dropbox: return [ "Public", "Documents", "Other" ]
-      case .airdrop: return [ "MacPro2020", "iMac Blueberry" ]
-      case .applications:
-        return [ "Diagram.app", "FrameMaker.app", "ProjectBuilder.app" ]
-      case .desktop: return [ "Kaffee", "Kuchen", "Krümel" ]
+      case .dropbox(let items), .airdrop(let items), .applications(let items),
+           .desktop(let items): return items
     }
   }
 }
@@ -37,6 +43,15 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
   @IBOutlet weak var window: NSWindow!
   @IBOutlet weak var outlineView: AnyOutlineView!
+  
+  var data : [ Section ] = [
+    .dropbox(items: [ "Public", "Documents", "Other" ]),
+    .airdrop(items: [ "MacPro2020", "iMac Blueberry" ]),
+    .applications(items: [
+      "Diagram.app", "FrameMaker.app", "ProjectBuilder.app"
+    ]),
+    .desktop(items: [ "Kaffee", "Kuchen", "Krümel" ])
+  ]
   
   func applicationDidFinishLaunching(_ aNotification: Notification) {
     outlineView.anyDelegate   = self
@@ -52,7 +67,7 @@ extension AppDelegate: AnyOutlineViewDataSource {
                    numberOfChildrenOfItem item: Any?) -> Int
   {
     switch item {
-      case .none:                  return Section.allCases.count // root
+      case .none:                  return data.count // root
       case let section as Section: return section.items.count
       default:                     return 0
     }
@@ -62,7 +77,7 @@ extension AppDelegate: AnyOutlineViewDataSource {
                    child index: Int, ofItem item: Any?) -> Any
   {
     switch item {
-      case .none:                  return Section.allCases[index]
+      case .none:                  return data[index]
       case let section as Section: return section.items[index]
       default: fatalError("unexpected item: \(item as Any)")
     }
@@ -89,7 +104,7 @@ extension AppDelegate: AnyOutlineViewDelegate {
     if let section = item as? Section {
       cell = outlineView.makeView(withIdentifier: CellID.header, owner: nil)
              as! NSTableCellView
-      cell.textField?.stringValue = section.rawValue
+      cell.textField?.stringValue = section.label
     }
     else {
       cell = outlineView.makeView(withIdentifier: CellID.data, owner: nil)
