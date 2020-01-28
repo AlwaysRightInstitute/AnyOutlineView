@@ -73,18 +73,20 @@ public extension AnyOutlineView {
       
       if !changeset.sectionDeleted.isEmpty {
         let set = IndexSet(changeset.sectionDeleted)
-        set.reversed().forEach { sectionIndexMap.remove(at: $0) }
-        removeItems(at: set, inParent: nil, withAnimation: deleteRowsAnimation)
+        removeItems(at: sectionIndexMap.map(set),
+                    inParent: nil, withAnimation: deleteRowsAnimation)
+        sectionIndexMap.remove(at: set)
       }
       
       if !changeset.sectionInserted.isEmpty {
         let set = IndexSet(changeset.sectionInserted)
-        set.reversed().forEach { sectionIndexMap.remove(at: $0) }
-        insertItems(at: set, inParent: nil, withAnimation: insertRowsAnimation)
+        insertItems(at: sectionIndexMap.map(set),
+                    inParent: nil, withAnimation: insertRowsAnimation)
+        sectionIndexMap.insert(at: set)
       }
       
       if !changeset.sectionUpdated.isEmpty {
-        for index in changeset.sectionUpdated {
+        for index in sectionIndexMap.map(IndexSet(changeset.sectionUpdated)) {
           let sectionItem = child(index, ofItem: nil)
           reloadItem(sectionItem)
         }
@@ -92,6 +94,7 @@ public extension AnyOutlineView {
       
       for ( source, target ) in changeset.sectionMoved {
         // we get 2=>2 moves here
+        // FIXME
         var adjustedTarget = target
         if source == target { // 2=>2 is really 2=>3
           adjustedTarget += 1
@@ -183,6 +186,21 @@ struct AppKitIndexShifter {
     return indexMap[index]
   }
   
+  mutating func map(_ sourceIndices: IndexSet) -> IndexSet {
+    var result = IndexSet()
+    for i in sourceIndices {
+      result.insert(indexMap[i])
+    }
+    return result
+  }
+  
+  mutating func insert(at originalIndices: IndexSet) {
+    originalIndices.reversed().forEach { insert(at: $0) }
+  }
+  mutating func remove(at originalIndices: IndexSet) {
+    originalIndices.reversed().forEach { remove(at: $0) }
+  }
+
   mutating func insert(at originalIndex: Int) {
     for i in originalIndex..<indexMap.endIndex {
       indexMap[i] += 1
